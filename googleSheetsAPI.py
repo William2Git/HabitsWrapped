@@ -101,10 +101,6 @@ def update_values(spreadsheet_id, range_name, value_input_option, _values):
   try:
     # builds sheets api v4 client using credentials
     service = build("sheets", "v4", credentials=creds)
-    
-    # values is a 2D list, where each list is the cell values for that row 
-    # if one list has 3 cell values, that means i filled out 3 columns in the first rows in the sheet
-    # every subsequent list is the next row of cell values
     body = {"values": _values}
     result = (
         service.spreadsheets()
@@ -122,33 +118,3 @@ def update_values(spreadsheet_id, range_name, value_input_option, _values):
   except HttpError as error:
     print(f"An error occurred: {error}")
     return error
-
-# main function
-if __name__ == "__main__":
-  # for reading: Pass: spreadsheet_id, and range_name
-  data = get_values("19SLHheAlCR8XxFji3jmO87LHzbh-ykUEbJzTgji9jEA", "B2:B6")
-  print(data)
-  
-  # for writing: Pass: spreadsheet_id,  range_name, value_input_option and  _values
-  # range_name can be bigger than _values
-  # _values must have a shape/size that fits into range_name, otherwise it errors
-  # if range_name is bigger, then the remaining cells are untouched
-  
-  # value_input_option can be USER_ENTERED or RAW
-  # RAW means it gets put in as a string as entered
-  # USER_ENTERED means the input will be however it looks like in SHEETS UI
-  # so formulas =1+2 become 3, any dates become the date
-  
-  # _values is a 2D list, where each list is the cell values for that row 
-  # if one list has 3 cell values, that means i filled out 3 columns in the first rows in the sheet
-  # every subsequent list is the next row of cell values
-  update_values(
-      "19SLHheAlCR8XxFji3jmO87LHzbh-ykUEbJzTgji9jEA",
-      "A2:B3",
-      "USER_ENTERED",
-      [["1", "2"], ["5", "1"]],
-  )
-  
-  data = get_values("19SLHheAlCR8XxFji3jmO87LHzbh-ykUEbJzTgji9jEA", "A2:A8")
-  print(data)
-  
